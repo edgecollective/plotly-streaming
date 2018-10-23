@@ -1,0 +1,197 @@
+<html>
+	<head>
+	<script src="./plotly-basic-latest.min.js"></script>
+	</head>
+
+<div id="temp" style="width:500px;height:400px;"></div>
+<div id="light" style="width:500px;height:400px;"></div>
+<div id="batt" style="width:500px;height:400px;"></div>
+
+<!--https://api.thingspeak.com/channels/607062/fields/1.json?results=2-->
+
+<!--https://api.thingspeak.com/channels/607062/feeds.json?results=20-->
+
+<script>
+
+const url = 'https://api.thingspeak.com/channels/607062/feeds.json?results=100'
+
+
+function getJSON(url) {
+        var resp ;
+        var xmlHttp ;
+
+        resp  = '' ;
+        xmlHttp = new XMLHttpRequest();
+
+        if(xmlHttp != null)
+        {
+            xmlHttp.open( "GET", url, false );
+            xmlHttp.send( null );
+            resp = xmlHttp.responseText;
+        }
+
+        return resp ;
+    }
+    
+//var gjson ;
+//gjson = getJSON('https://api.thingspeak.com/channels/607062/feeds.json?results=20') ;
+//console.log(gjson)
+
+fetch(url)
+  .then((resp) => resp.json()) // Transform the data into json
+  .then(function(data) {
+    let series=data.feeds;
+    
+    var date=[];
+    var index=[];
+    var temp=[];
+    var light=[];
+    var batt=[];
+    for (var i = 0; i < data.feeds.length; i++) {
+ 
+    date.push(data.feeds[i].created_at);
+    index.push(i);
+    temp.push(data.feeds[i].field1);
+    light.push(data.feeds[i].field2);
+    batt.push(data.feeds[i].field3);
+    }
+    //console.log(date);
+    //console.log(index);
+    //console.log(temp);
+
+
+    TEMP = document.getElementById('temp');
+    
+/*	Plotly.plot( TESTER, [{
+	x: date,
+	y: temp }], {
+	margin: { t: 0 } } );
+	*/
+	
+	var trace1={
+	x:date,
+	y:temp,
+	name: 'Temp',
+	type: 'scatter'
+	};
+	
+	var data=[trace1];
+	var layout = {
+  title: 'Temp',
+  xaxis: {
+    title: 'date',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  },
+  yaxis: {
+    title: 'temp (C)',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  }
+};
+
+Plotly.newPlot(TEMP,data,layout);
+
+
+ LIGHT = document.getElementById('light');
+    
+/*	Plotly.plot( TESTER, [{
+	x: date,
+	y: temp }], {
+	margin: { t: 0 } } );
+	*/
+	
+	var trace2={
+	x:date,
+	y:light,
+	name: 'Light',
+	type: 'scatter'
+	};
+	
+	var data2=[trace2];
+	var layout2 = {
+  title: 'Light',
+  xaxis: {
+    title: 'date',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  },
+  yaxis: {
+    title: 'level (0..1)',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  }
+};
+
+Plotly.newPlot(LIGHT,data2,layout2);
+
+
+BATT = document.getElementById('batt');
+    
+/*	Plotly.plot( TESTER, [{
+	x: date,
+	y: temp }], {
+	margin: { t: 0 } } );
+	*/
+	
+	var trace3={
+	x:date,
+	y:batt,
+	name: 'Batt',
+	type: 'scatter'
+	};
+	
+	var data3=[trace3];
+	var layout3 = {
+  title: 'Battery',
+  xaxis: {
+    title: 'date',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  },
+  yaxis: {
+    title: 'Voltage (Volts)',
+    titlefont: {
+      family: 'Courier New, monospace',
+      size: 12,
+      color: '#7f7f7f'
+    }
+  }
+};
+
+Plotly.newPlot(BATT,data3,layout3);
+
+
+
+    })
+  
+        
+</script>
+
+<!--
+<script>
+	TESTER = document.getElementById('tester');
+	Plotly.plot( TESTER, [{
+	x: [1, 2, 3, 4, 5],
+	y: [1, 2, 4, 8, 16] }], {
+	margin: { t: 0 } } );
+</script>
+-->
+
+  
+</html>
